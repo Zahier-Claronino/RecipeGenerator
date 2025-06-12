@@ -40,7 +40,7 @@ Separate each recipe clearly with a dashed line (---).`;
     const cohereResponse = await fetch("https://api.cohere.ai/v1/generate", {
       method: "POST",
       headers: {
-        Authorization: "Bearer 7NiBcnXBgwnBJlU5UTtodGKruHzGViokIulBkyeR", // ⬅️ Replace with your Cohere API key
+        Authorization: "Bearer 7NiBcnXBgwnBJlU5UTtodGKruHzGViokIulBkyeR",
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -70,61 +70,83 @@ Separate each recipe clearly with a dashed line (---).`;
     const container = document.createElement("div");
     container.style.display = "flex";
     container.style.flexDirection = "column";
-    container.style.justifyContent ='start';
-    container.style.borderRadius = '10px';
-    
+    container.style.justifyContent = "start";
+    container.style.borderRadius = "10px";
 
     const recipes = recipeText.split("---").map((r) => r.trim()).filter(Boolean);
 
     for (let i = 0; i < recipes.length; i++) {
-      
-  const recipeDiv = document.createElement("div");
-  recipeDiv.style.border = "1px solid #ccc";
-  recipeDiv.style.borderRadius = "10px";
-  recipeDiv.style.backgroundColor = "white";
-  recipeDiv.style.color = "gray";
-  recipeDiv.style.padding = "5px";
-  recipeDiv.style.display = "flex";
-  recipeDiv.style.flexDirection = "column"; // 🧠 Stack title on top
-  recipeDiv.style.justifyContent = 'center';
-  recipeDiv.style.minHeight = '400px';
+      const recipeDiv = document.createElement("div");
+      recipeDiv.style.background = "whitesmoke";
+      recipeDiv.style.color = "darkslategray";
+      recipeDiv.style.display = "flex";
+      recipeDiv.style.flexDirection = "column";
+      recipeDiv.style.justifyContent = "center";
+      recipeDiv.style.minHeight = "400px";
 
-  let h = recipeDiv.style.height;
+      const title = recipeTitles[i] || `Recipe ${i + 1}`;
+      const titleElem = document.createElement("h3");
+      titleElem.textContent = title;
+      recipeDiv.appendChild(titleElem);
 
-  const title = recipeTitles[i] || `Recipe ${i + 1}`;
-  const titleElem = document.createElement("h3");
-  titleElem.textContent = title;
-  titleElem.style.marginBottom = "1px"; // Optional spacing
-  recipeDiv.appendChild(titleElem); // 🔝 Now it's always on top
+      const contentRow = document.createElement("div");
+      contentRow.style.display = "flex";
 
-  // 🔲 Wrapper for content row (text + image side-by-side)
-  const contentRow = document.createElement("div");
-  contentRow.style.display = "flex";
-  contentRow.style.gap = "2px"; // optional spacing between columns
+      const pre = document.createElement("pre");
+      pre.style.whiteSpace = "pre-wrap";
+      pre.style.backgroundColor = "lightblue";
+      pre.style.color = "black";
+      pre.style.flex = "1";
+      pre.textContent = recipes[i];
+      contentRow.appendChild(pre);
 
-  // 📜 Recipe Text
-  const pre = document.createElement("pre");
-  pre.style.whiteSpace = "pre-wrap";
-  pre.style.backgroundColor = "gray";
-  pre.style.color = "white";
-  pre.style.flex = "1"; // let it take available space
-  pre.textContent = recipes[i];
-  contentRow.appendChild(pre);
+      // 🖼️ Image loader container
+      const imageWrapper = document.createElement("div");
+      imageWrapper.style.position = "relative";
+      imageWrapper.style.display = "flex";
+      imageWrapper.style.alignItems = "center";
+      imageWrapper.style.justifyContent = "center";
+      imageWrapper.style.width = "40%";
+      imageWrapper.style.height = "300px";
 
-  // 🖼️ Image
-  const imageUrl = generateImagePollinations(`${title}, professional food photography, high quality`);
-  const img = document.createElement("img");
-  img.src = imageUrl;
-  img.alt = title;
-  img.style.flex = "1"; // let it share space with text
-  img.style.maxWidth = "40%";
-  img.style.height = h;
-  img.style.borderRadius = "8px";
-  contentRow.appendChild(img);
+      // ⏳ Spinner
+      const spinner = document.createElement("div");
+      spinner.className = "spinner";
+      spinner.style.border = "6px solid #f3f3f3";
+      spinner.style.borderTop = "6px solid #3498db";
+      spinner.style.borderRadius = "50%";
+      spinner.style.width = "40px";
+      spinner.style.height = "40px";
+      spinner.style.animation = "spin 1s linear infinite";
+      imageWrapper.appendChild(spinner);
 
-  // 📦 Add the row to the main container
-  recipeDiv.appendChild(contentRow);
-  container.appendChild(recipeDiv);
+      // 📷 Image
+      const img = document.createElement("img");
+      img.style.maxWidth = "100%";
+      img.style.maxHeight = "100%";
+      img.style.display = "none";
+      img.style.flex = '1';
+      img.src = generateImagePollinations(`${title}`);
+      img.alt = title;
+      img.style.marginTop = '35px';
+
+      img.onload = () => {
+        spinner.remove();
+        img.style.display = "block";
+      };
+
+      img.onerror = () => {
+        spinner.remove();
+        const errorText = document.createElement("div");
+        errorText.textContent = "⚠️ Image failed to load.";
+        imageWrapper.appendChild(errorText);
+      };
+
+      imageWrapper.appendChild(img);
+      contentRow.appendChild(imageWrapper);
+
+      recipeDiv.appendChild(contentRow);
+      container.appendChild(recipeDiv);
     }
 
     result.appendChild(container);
@@ -139,7 +161,6 @@ function generateImagePollinations(prompt) {
   const encodedPrompt = encodeURIComponent(prompt);
   return `https://image.pollinations.ai/prompt/${encodedPrompt}`;
 }
-
 
 
 
