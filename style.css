@@ -33,17 +33,16 @@ body::before{
     min-height:100%;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: start;
     align-items: center;
     position: relative;
     z-index: 3;
-    color:
 }
 
 
 
 .main h1{
-    
+    margin:0;
     font-family: 'Playfair Display', serif;
     
     /*font-family: 'Lobster', cursive;
