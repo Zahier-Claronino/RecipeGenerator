@@ -70,7 +70,7 @@ Separate each recipe clearly with a dashed line (---).`;
     const container = document.createElement("div");
     container.style.display = "flex";
     container.style.flexDirection = "column";
-    container.style.justifyContent = "start";
+    container.style.justifyContent = "center";
     container.style.borderRadius = "10px";
 
     const recipes = recipeText.split("---").map((r) => r.trim()).filter(Boolean);
@@ -81,13 +81,16 @@ Separate each recipe clearly with a dashed line (---).`;
       recipeDiv.style.color = "darkslategray";
       recipeDiv.style.display = "flex";
       recipeDiv.style.flexDirection = "column";
-      recipeDiv.style.justifyContent = "center";
-      recipeDiv.style.minHeight = "400px";
+      recipeDiv.style.justifyContent = "start";
 
       const title = recipeTitles[i] || `Recipe ${i + 1}`;
       const titleElem = document.createElement("h3");
       titleElem.textContent = title;
       recipeDiv.appendChild(titleElem);
+
+     /*let titleElemHeight = titleElem.offsetHeight;
+     let recipeDivHeight = recipeDiv.offsetHeight;
+     let totalH = recipeDivHeight - titleElemHeight - 100;*/
 
       const contentRow = document.createElement("div");
       contentRow.style.display = "flex";
@@ -99,15 +102,20 @@ Separate each recipe clearly with a dashed line (---).`;
       pre.style.flex = "1";
       pre.textContent = recipes[i];
       contentRow.appendChild(pre);
+      
+      
+      
+      
 
       // 🖼️ Image loader container
       const imageWrapper = document.createElement("div");
       imageWrapper.style.position = "relative";
       imageWrapper.style.display = "flex";
-      imageWrapper.style.alignItems = "center";
-      imageWrapper.style.justifyContent = "center";
+      imageWrapper.style.alignItems = "start";
+      imageWrapper.style.justifyContent = "start";
       imageWrapper.style.width = "40%";
-      imageWrapper.style.height = "300px";
+      /*imageWrapper.style.height = `${totalH}px`;*/
+
 
       // ⏳ Spinner
       const spinner = document.createElement("div");
@@ -123,16 +131,24 @@ Separate each recipe clearly with a dashed line (---).`;
       // 📷 Image
       const img = document.createElement("img");
       img.style.maxWidth = "100%";
-      img.style.maxHeight = "100%";
       img.style.display = "none";
       img.style.flex = '1';
       img.src = generateImagePollinations(`${title}`);
       img.alt = title;
-      img.style.marginTop = '35px';
+      img.style.marginTop = '17.5px';
+      
 
       img.onload = () => {
         spinner.remove();
         img.style.display = "block";
+        requestAnimationFrame(() => {
+          console.log("the height of pre is: " + pre.offsetHeight);
+          const H = pre.offsetHeight;
+          img.style.height = `${H}px`;
+
+          console.log("the height of the image is: " + img.offsetHeight);
+
+        });
       };
 
       img.onerror = () => {
@@ -164,6 +180,11 @@ function generateImagePollinations(prompt) {
 
 
 
-
+document.getElementById("ingredients").addEventListener("keydown", function (event) {
+  if (event.key === "Enter") {
+    event.preventDefault(); // Prevent form submission or weird behavior
+    document.getElementById("generate-btn").click(); // Trigger the button click
+  }
+});
 
     

@@ -83,9 +83,8 @@ nav{
     font-size: 18px;
     text-align: center;
     width:100%;
-    white-space: pre-wrap;  /* This allows long lines to wrap */
     word-break: break-word;
-    max-height: 370px; /* Optional: limit the height and make scrollable */
+    max-height: 450px; /* Optional: limit the height and make scrollable */
     overflow-y: auto;
 }
 
